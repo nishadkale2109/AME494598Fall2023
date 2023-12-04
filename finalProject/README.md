@@ -30,3 +30,6 @@ _Caption: Image showcasing the our setup._
 - Nishad Kale (ASU ID: 1226362919)
 
 - Rahil Hastu (ASU ID: 1225356132)
+
+## Regarding the video demonstration 
+- The video demonstration is in the main not in this folder, please check. Thank you
