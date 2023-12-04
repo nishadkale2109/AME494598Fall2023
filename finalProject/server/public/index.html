@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 20px;
+      }
+
+      h1 {
+        color: #333;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background-color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      th,
+      td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+
+      th {
+        background-color: #f2f2f2;
+      }
+
+      tr:hover {
+        background-color: #f5f5f5;
+      }
+
+      input[type="datetime-local"] {
+        margin-bottom: 10px;
+      }
+    </style>
+    <script src="asyncReq.js"></script>
+    <script>
+      var intervalId;
+
+      function updateData(startDate, endDate) {
+        loadURL(
+          `./getData?startDate=${startDate}&endDate=${endDate}`,
+          function (data) {
+            data = JSON.parse(data);
+
+            var table = document.createElement("table");
+            var tr = document.createElement("tr");
+            var th1 = document.createElement("th");
+            var th2 = document.createElement("th");
+            var text1 = document.createTextNode("Serial Number");
+            var text2 = document.createTextNode("Motion Time");
+
+            th1.appendChild(text1);
+            th2.appendChild(text2);
+            tr.appendChild(th1);
+            tr.appendChild(th2);
+            table.appendChild(tr);
+
+            for (var i = 0; i < data.length; i++) {
+              var tr = document.createElement("tr");
+
+              var td1 = document.createElement("td");
+              var serialNumber = document.createTextNode(i + 1);
+              td1.appendChild(serialNumber);
+              tr.appendChild(td1);
+
+              var td2 = document.createElement("td");
+              var motionTime = document.createTextNode(data[i].currentDate);
+              td2.appendChild(motionTime);
+              tr.appendChild(td2);
+
+              table.appendChild(tr);
+            }
+
+            document.getElementById("results").innerHTML = table.outerHTML;
+          }
+        );
+      }
+
+      function start() {
+        intervalId = setInterval(updateData, 10000);
+      }
+
+      function stopInterval() {
+        clearInterval(intervalId);
+      }
+
+      function fetchData() {
+        stopInterval();
+
+        var startDate = document.getElementById("startDate").value;
+        var endDate = document.getElementById("endDate").value;
+
+        updateData(startDate, endDate);
+
+        start();
+      }
+    </script>
+  </head>
+  <body onload="start()">
+    <h1>Motion Data</h1>
+    <label for="startDate">Start Date and Time:</label>
+    <input type="datetime-local" id="startDate" />
+
+    <label for="endDate">End Date and Time:</label>
+    <input type="datetime-local" id="endDate" />
+
+    <button onclick="fetchData()">Fetch Data</button>
+
+    <div id="results"></div>
+  </body>
+</html>
